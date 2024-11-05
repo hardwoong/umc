@@ -33,3 +33,16 @@ export const handleListStoreMissions = async (req, res) => {
     }
 };
 
+export const handleListInProgressMissions = async (req, res) => {
+    try {
+        const userId = parseInt(req.params.userId);
+        const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+
+        const missions = await listInProgressMissions(userId, cursor);
+
+        res.status(StatusCodes.OK).json({ result: missions });
+    } catch (error) {
+        console.error(error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+    }
+};

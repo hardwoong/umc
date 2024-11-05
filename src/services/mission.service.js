@@ -2,6 +2,12 @@
 import { responseFromMission } from "../dtos/mission.dto.js";
 import { addMission, checkMissionExists, checkMissionInProgress, addMemberMissionToDB } from "../repositories/mission.repository.js";
 import { listStoreMissionsFromDB } from "../repositories/mission.repository.js";
+import { listInProgressMissionsFromDB } from "../repositories/mission.repository.js";
+
+export const listInProgressMissions = async (userId, cursor) => {
+    const missions = await listInProgressMissionsFromDB(userId, cursor);
+    return missions.map(responseFromMission);
+};
 
 export const listStoreMissions = async (storeId, cursor) => {
     const missions = await listStoreMissionsFromDB(storeId, cursor);

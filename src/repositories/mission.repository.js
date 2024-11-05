@@ -47,3 +47,19 @@ export const listStoreMissionsFromDB = async (storeId, cursor) => {
         orderBy: { id: "asc" },
     });
 };
+
+export const listInProgressMissionsFromDB = async (userId, cursor) => {
+    const take = 10; // 한 번에 가져올 미션 개수
+
+    return await prisma.memberMission.findMany({
+        where: {
+            memberId: userId,
+            status: "진행중"
+        },
+        take,
+        skip: cursor ? 1 : 0, // 커서가 있으면 현재 커서 이후의 데이터를 가져옵니다
+        ...(cursor && { cursor: { id: cursor } }), // 커서를 기준으로 페이징
+        orderBy: { id: "asc" },
+        include: { mission: true } // 미션 상세 정보도 포함
+    });
+};
