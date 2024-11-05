@@ -30,3 +30,19 @@ export const listUserReviewsFromDB = async (userId, cursor) => {
         orderBy: { id: "asc" },
     });
 };
+
+export const updateMissionStatus = async (userId, missionId, status) => {
+    const result = await prisma.memberMission.updateMany({
+        where: {
+            memberId: userId,
+            missionId: missionId,
+            status: "진행중" // 현재 상태가 "진행중"인 미션만 업데이트
+        },
+        data: {
+            status: status
+        }
+    });
+
+    // 업데이트된 행이 있으면 true 반환, 없으면 false 반환
+    return result.count > 0;
+};

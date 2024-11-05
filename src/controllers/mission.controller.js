@@ -1,5 +1,8 @@
 import { StatusCodes } from "http-status-codes";
 import { createMission, challengeMission } from "../services/mission.service.js";
+import { listStoreMissions } from "../services/mission.service.js";
+import { listInProgressMissions } from "../services/mission.service.js";
+import { completeMission } from "../services/mission.service.js";
 
 export const handleAddMission = async (req, res) => {
     try {
@@ -41,6 +44,20 @@ export const handleListInProgressMissions = async (req, res) => {
         const missions = await listInProgressMissions(userId, cursor);
 
         res.status(StatusCodes.OK).json({ result: missions });
+    } catch (error) {
+        console.error(error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+    }
+};
+
+export const handleCompleteMission = async (req, res) => {
+    try {
+        const userId = parseInt(req.params.userId);
+        const missionId = parseInt(req.params.missionId);
+
+        const result = await completeMission(userId, missionId);
+
+        res.status(StatusCodes.OK).json({ message: result });
     } catch (error) {
         console.error(error);
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
