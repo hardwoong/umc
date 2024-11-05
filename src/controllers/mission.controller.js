@@ -1,15 +1,20 @@
 import { StatusCodes } from "http-status-codes";
-import { addMission } from "../services/mission.service.js";
+import { createMission, challengeMission } from "../services/mission.service.js";
 
-export const handleAddMission = async (req, res, next) => {
+export const handleAddMission = async (req, res) => {
     try {
-        console.log("미션 추가 요청을 받았습니다!");
-        console.log("body:", req.body); // 테스트용 로그
-
-        const mission = await addMission(req.body);
+        const mission = await createMission(req.body);
         res.status(StatusCodes.CREATED).json({ result: mission });
     } catch (error) {
-        console.error(error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+    }
+};
+
+export const handleChallengeMission = async (req, res) => {
+    try {
+        const mission = await challengeMission(req.body);
+        res.status(StatusCodes.CREATED).json({ result: mission });
+    } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
 };

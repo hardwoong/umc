@@ -1,24 +1,14 @@
-import { addStoreToDB } from "./store.repository.js";
+// store.service.js
+import { addStore, checkStoreExists } from "../repositories/store.repository.js";
+import { responseFromStore } from "../dtos/store.dto.js";
 
-export const addStore = async (data) => {
-    const { regionId, name, address, score } = data;
-
-    if (!regionId || !name || !address || score === undefined) {
-        throw new Error("필수 필드가 누락되었습니다.");
-    }
-
-    const storeId = await addStoreToDB({
-        regionId,
-        name,
-        address,
-        score,
+export const createStore = async (data) => {
+    const store = await addStore({
+        name: data.name,
     });
+    return responseFromStore(store);
+};
 
-    return {
-        id: storeId,
-        regionId,
-        name,
-        address,
-        score,
-    };
+export const isStoreExists = async (storeId) => {
+    return await checkStoreExists(storeId);
 };

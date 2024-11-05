@@ -1,7 +1,6 @@
-// src/repositories/mission.repository.js
+// mission.repository.js
 import { prisma } from "../db.config.js";
 
-// 미션 추가
 export const addMission = async (data) => {
     return await prisma.mission.create({
         data: {
@@ -13,7 +12,6 @@ export const addMission = async (data) => {
     });
 };
 
-// 특정 미션 확인
 export const checkMissionExists = async (missionId) => {
     const mission = await prisma.mission.findUnique({
         where: { id: missionId },
@@ -21,7 +19,6 @@ export const checkMissionExists = async (missionId) => {
     return mission !== null;
 };
 
-// 미션 도전 확인
 export const checkMissionInProgress = async (memberId, missionId) => {
     const memberMission = await prisma.memberMission.findFirst({
         where: { memberId, missionId, status: "진행중" },
@@ -29,12 +26,11 @@ export const checkMissionInProgress = async (memberId, missionId) => {
     return memberMission !== null;
 };
 
-// 미션 도전 추가
-export const addMemberMissionToDB = async (data) => {
+export const addMemberMissionToDB = async (memberId, missionId) => {
     return await prisma.memberMission.create({
         data: {
-            memberId: data.memberId,
-            missionId: data.missionId,
+            memberId,
+            missionId,
             status: "진행중",
         },
     });

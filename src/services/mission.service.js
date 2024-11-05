@@ -1,31 +1,24 @@
-import { addMissionToDB, checkStoreExists } from "../repositories/mission.repository.js";
+// mission.service.js
+import { responseFromMission } from "../dtos/mission.dto.js";
+import { addMission, checkMissionExists, checkMissionInProgress, addMemberMissionToDB } from "../repositories/mission.repository.js";
 
-export const addMission = async (data) => {
-    const { storeId, reward, deadline, missionSpec } = data;
-
-    if (!storeId || !reward || !deadline || !missionSpec) {
-        throw new Error("필수 필드가 누락되었습니다.");
-    }
-
-    // 가게가 존재하는지 확인
-    const storeExists = await checkStoreExists(storeId);
-    if (!storeExists) {
-        throw new Error("미션을 추가하려는 가게가 존재하지 않습니다.");
-    }
-
-    // 미션을 데이터베이스에 추가
-    const missionId = await addMissionToDB({
-        storeId,
-        reward,
-        deadline,
-        missionSpec,
+export const createMission = async (data) => {
+    const mission = await addMission({
+        storeId: data.storeId,
+        reward: data.reward,
+        deadline: data.deadline,
+        missionSpec: data.missionSpec,
     });
+    return responseFromMission(mission);
+};
 
-    return {
-        id: missionId,
-        storeId,
-        reward,
-        deadline,
-        missionSpec,
-    };
+export const challengeMission = async (data) => {
+    const missionExists = await checkMissionExists(data.missionId);
+    if (!missionExists) throw new Error("미션이 존재하지 않습니다.");
+
+    const inProgress = await checkMissionInProgress(data.memberId, data.missionId);
+    if (inProgress) throw new Error("이미 도전 중인 미션입니다.");
+
+    const newChallenge = await addMemberMissionToDB(data.memberId, data.missionId);
+    return responseFromMission(newChallenge);
 };

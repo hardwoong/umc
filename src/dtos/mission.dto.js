@@ -1,5 +1,3 @@
-// src/dtos/mission.dto.js
-
 export const bodyToMission = (body) => ({
     storeId: body.storeId,
     reward: body.reward,

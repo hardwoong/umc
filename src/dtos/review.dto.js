@@ -1,5 +1,3 @@
-// src/dtos/review.dto.js
-
 export const bodyToReview = (body) => ({
     storeId: body.storeId,
     userId: body.userId,

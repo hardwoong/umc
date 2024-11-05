@@ -1,5 +1,3 @@
-// src/dtos/user.dto.js
-
 export const bodyToUser = (body) => ({
     email: body.email,
     name: body.name,

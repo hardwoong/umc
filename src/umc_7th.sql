@@ -190,8 +190,3 @@ INSERT INTO member_agree (member_id, terms_id, created_at, updated_at)
 VALUES 
 (1, 1, NOW(), NOW()), 
 (2, 2, NOW(), NOW());
-
-INSERT INTO member_prefer (member_id, category_id, created_at, updated_at)
-VALUES 
-(1, 1, NOW(), NOW()), 
-(2, 2, NOW(), NOW());
