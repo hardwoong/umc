@@ -1,40 +1,41 @@
-import { pool } from "../db.config.js";
+// src/repositories/mission.repository.js
+import { prisma } from "../db.config.js";
 
-// 가게 존재 여부 확인
-export const checkStoreExists = async (storeId) => {
-    const conn = await pool.getConnection();
-
-    try {
-        const [rows] = await conn.query(
-            `SELECT COUNT(*) AS count FROM store WHERE id = ?;`,
-            [storeId]
-        );
-        conn.release();
-
-        // 가게가 존재하면 true, 존재하지 않으면 false 반환
-        return rows[0].count > 0;
-    } catch (err) {
-        conn.release();
-        throw new Error(`가게를 확인하는 중 오류가 발생했습니다. (${err.message})`);
-    }
+// 미션 추가
+export const addMission = async (data) => {
+    return await prisma.mission.create({
+        data: {
+            storeId: data.storeId,
+            reward: data.reward,
+            deadline: new Date(data.deadline),
+            missionSpec: data.missionSpec,
+        },
+    });
 };
 
-// 미션을 데이터베이스에 추가
-export const addMissionToDB = async (data) => {
-    const { storeId, reward, deadline, missionSpec } = data;
-    const conn = await pool.getConnection();
+// 특정 미션 확인
+export const checkMissionExists = async (missionId) => {
+    const mission = await prisma.mission.findUnique({
+        where: { id: missionId },
+    });
+    return mission !== null;
+};
 
-    try {
-        const [result] = await conn.query(
-            `INSERT INTO mission (store_id, reward, deadline, mission_spec, created_at, updated_at) 
-            VALUES (?, ?, ?, ?, NOW(), NOW());`,
-            [storeId, reward, deadline, missionSpec]
-        );
+// 미션 도전 확인
+export const checkMissionInProgress = async (memberId, missionId) => {
+    const memberMission = await prisma.memberMission.findFirst({
+        where: { memberId, missionId, status: "진행중" },
+    });
+    return memberMission !== null;
+};
 
-        return result.insertId; // 새로 추가된 미션의 ID 반환
-    } catch (err) {
-        throw new Error(`미션 추가 중 오류가 발생했습니다. (${err.message})`);
-    } finally {
-        conn.release();
-    }
+// 미션 도전 추가
+export const addMemberMissionToDB = async (data) => {
+    return await prisma.memberMission.create({
+        data: {
+            memberId: data.memberId,
+            missionId: data.missionId,
+            status: "진행중",
+        },
+    });
 };
