@@ -35,3 +35,15 @@ export const addMemberMissionToDB = async (memberId, missionId) => {
         },
     });
 };
+
+export const listStoreMissionsFromDB = async (storeId, cursor) => {
+    const take = 10; // 한 번에 가져올 미션 개수
+
+    return await prisma.mission.findMany({
+        where: { storeId },
+        take,
+        skip: cursor ? 1 : 0, // 커서가 있으면 현재 커서 이후의 데이터를 가져옴
+        ...(cursor && { cursor: { id: cursor } }), // 커서를 기준으로 페이징
+        orderBy: { id: "asc" },
+    });
+};

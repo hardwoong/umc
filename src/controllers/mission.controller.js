@@ -18,3 +18,18 @@ export const handleChallengeMission = async (req, res) => {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
 };
+
+export const handleListStoreMissions = async (req, res) => {
+    try {
+        const storeId = parseInt(req.params.storeId);
+        const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+
+        const missions = await listStoreMissions(storeId, cursor);
+
+        res.status(StatusCodes.OK).json({ result: missions });
+    } catch (error) {
+        console.error(error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+    }
+};
+

@@ -6,6 +6,7 @@ import { handleUserSignUp } from "./controllers/user.controller.js";
 import { handleAddStore } from "./controllers/store.controller.js";
 import { handleAddReview, handleListUserReviews } from "./controllers/review.controller.js";
 import { handleAddMission, handleChallengeMission } from "./controllers/mission.controller.js";
+import { handleListStoreMissions } from "./controllers/mission.controller.js";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.post("/api/v1/reviews", handleAddReview);
 app.post("/api/v1/missions", handleAddMission);
 app.post("/api/v1/missions/challenge", handleChallengeMission);
 app.get("/api/v1/users/:userId/reviews", handleListUserReviews);
+app.get("/api/v1/stores/:storeId/missions", handleListStoreMissions);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

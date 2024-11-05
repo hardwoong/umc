@@ -1,6 +1,12 @@
 // mission.service.js
 import { responseFromMission } from "../dtos/mission.dto.js";
 import { addMission, checkMissionExists, checkMissionInProgress, addMemberMissionToDB } from "../repositories/mission.repository.js";
+import { listStoreMissionsFromDB } from "../repositories/mission.repository.js";
+
+export const listStoreMissions = async (storeId, cursor) => {
+    const missions = await listStoreMissionsFromDB(storeId, cursor);
+    return missions.map(responseFromMission);
+};
 
 export const createMission = async (data) => {
     const mission = await addMission({
